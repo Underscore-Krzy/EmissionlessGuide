@@ -44,11 +44,16 @@
     <!-- Step 1 -->
     <section id="step1">
       <h2><b>Step 1</b></h2>
-      <p>Remove the gradients from both your broadband and narrowband images. Though it's not strictly necessary, you can also color calibrate your broadband at this step. Keep the stars in for now, and don't perform any sharpening before subtracting the emissions to ensure accurate subtraction. Don't denoise your broadband and avoid denoising your narrowband if you can help it. Do not stretch the image yet - both continuum and emission subtraction need to be done on linear data. 
+      <p>
+        Remove the gradients from both your broadband and narrowband images. Though it's not strictly necessary, you can also color calibrate your broadband at this step. Keep the stars in for now, and don't perform any sharpening before subtracting the emissions to ensure accurate subtraction. Don't denoise your broadband and avoid denoising your narrowband if you can help it. Do not stretch the image yet - both continuum and emission subtraction need to be done on linear data. 
       </p>
       <ul>
           <li>
-            [OSC ONLY] You need to extract all emission bands from your dualband images. Due to how the filters used in the CFA pass light, the G and B channels will contain some red signal, meaning that, if you're using an Ha/Oiii dualband filter, the Oiii will contain some Ha "leakage". To remedy this you can use the <a href="https://dbxtract.astrocitas.com">DBXtract script</a> but I usually get more accurate results by doing it manually. Use the standard PixelMath for image subtraction <code>$T - factor * ($T[0] - med($T[0]))</code> on both G and B channels. Find the highest factors that still avoid oversubtraction. If an emission band is captured in two color channels simultaneously (e.g. Oiii), combine them. Tip: Oiii combination factors are about 66% G and 33% B when combining.
+            [OSC ONLY] You need to extract all emission bands from your dualband images. Due to how the filters used in the CFA pass light, the G and B channels will contain some red signal, meaning that, if you're using an Ha/Oiii dualband filter, the Oiii will contain some Ha "leakage". To remedy this you can use the <a href="https://dbxtract.astrocitas.com">DBXtract script</a> but I usually get more accurate results by doing it manually. Use the standard PixelMath for image subtraction
+            <code class="language-javascript hljs">
+              <span class="hljs-title">$T</span> - <span class="hljs-title">factor</span> * (<span class="hljs-title">$T</span>[<span class="hljs-number">0</span>] - <span class="hljs-title">med</span>(<span class="hljs-title">$T</span>[<span class="hljs-number">0</span>]))
+            </code>
+            on both G and B channels. Find the highest factors that still avoid oversubtraction. If an emission band is captured in two color channels simultaneously (e.g. Oiii), combine them. Tip: Oiii combination factors are about 66% G and 33% B when combining.
           </li>
       </ul> 
      
@@ -149,13 +154,13 @@ Some general tips:
             My estimates of <b>relative</b> subtraction factors for SHO (keep in mind these are only there to give you a starting point):
             <ul>
               <li>
-                Sii - <code class="language-javascript">R = 1.0, G = 0.0, B = 0.0</code>
+                Sii - <code class="language-javascript hljs"><span class="hljs-title">R</span> = <span class="hljs-number">1.0</span>, <span class="hljs-title">G</span> = <span class="hljs-number">0.0</span>, <span class="hljs-title">B</span> = <span class="hljs-number">0.0</span></code>
               </li>
               <li>
-                Ha - <code class="language-javascript">R = 1.0, G = 0.2, B = 0.3</code>
+                Ha - <code class="language-javascript hljs"><span class="hljs-title">R</span> = <span class="hljs-number">1.0</span>, <span class="hljs-title">G</span> = <span class="hljs-number">0.2</span>, <span class="hljs-title">B</span> = <span class="hljs-number">0.3</span></code>
               </li>
               <li>
-                Oiii - <code class="language-javascript">R = 0.0, G = 0.9, B = 1.0</code>
+                Oiii - <code class="language-javascript hljs"><span class="hljs-title">R</span> = <span class="hljs-number">0.0</span>, <span class="hljs-title">G</span> = <span class="hljs-number">0.9</span>, <span class="hljs-title">B</span> = <span class="hljs-number">1.0</span></code>
               </li>
             </ul>
           </li>
@@ -216,7 +221,11 @@ More often than not you'll need to tweak the subtraction factors you chose previ
 There are a couple of ways to use emissionless images but the main three are:
 </p>
       <ol>
-        <li>A simple non-emission enhancement - stretch the emissionless image like usual, though you probably want to keep it on the darker, understretched side. Screen blend <code class="language-javascript">~(~$T * ~emissionless)</code> it with your final image towards the end of your processing, similar to how you'd do narrowband addition.</li>
+        <li>A simple non-emission enhancement - stretch the emissionless image like usual, though you probably want to keep it on the darker, understretched side. Screen blend 
+          <code class="language-javascript hljs">
+            <span class="hljs-operator">~</span>(<span class="hljs-operator">~</span><span class="hljs-title">$T</span> * <span class="hljs-operator">~</span><span class="hljs-title">emissionless</span>)
+          </code>
+          it with your final image towards the end of your processing, similar to how you'd do narrowband addition.</li>
         <li>A base for narrowband addition - instead of adding the narrowband to your broadband image you instead add it to the emissionless image. This allows for more precise control over each part of the image, especially when paired with HDR stretching of the narrowband channels. This way, you'll preserve the features that would be otherwise overshadowed by bright emission while also adding the faint narrowband features.</li>
         <li>A better continuum reference - technically continuum subtraction should be done using emissionless images. While it might not be strictly necessary for Ha or Oiii continuum subtraction, Sii will very often get severely oversubtracted if you don't remove Ha emission from the red channel before CS.</li>
       </ol>
