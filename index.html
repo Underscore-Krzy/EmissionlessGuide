@@ -43,7 +43,7 @@
 
     <!-- Step 1 -->
     <section id="step1">
-      <h2>Step 1</h2>
+      <h2><b>Step 1</b></h2>
       <p>Step 1:
 Remove the gradients from both your broadband and narrowband images. Though it's not strictly necessary, you can also color calibrate your broadband at this step. Keep the stars in for now, and don't perform any sharpening before subtracting the emissions to ensure accurate subtraction. Don't denoise your broadband and avoid denoising your narrowband if you can help it. Do not stretch the image yet - both continuum and emission subtraction need to be done on linear data. 
       </p>
@@ -82,7 +82,7 @@ Remove the gradients from both your broadband and narrowband images. Though it's
 
     <!-- Step 2 -->
     <section id="step2">
-      <h2>Step 2</h2>
+      <h2><b>Step 2</b></h2>
       <p>If possible, identify a feature that's visible exclusively (or primarily in one of the emission bands you’ve captured, and that also shows up clearly in the broadband data. This will make the subsequent steps easier.</p>
       <div class="carousel-container">
         <div id="carouselStructure" class="carousel" data-bs-ride="false" data-bs-interval="false">
@@ -115,7 +115,7 @@ Remove the gradients from both your broadband and narrowband images. Though it's
 
     <!-- Step 3 -->
     <section id="step3">
-      <h2>Step 3</h2>
+      <h2><b>Step 3</b></h2>
       <p>
 Now comes the fun part. You need to increase the subtraction factors for the emission band you've chosen in step 2. The PixelMath used to make an emissionless image is the standard image subtraction, just with more images.
 Emissionless PixelMath for SHO:</p>
@@ -176,7 +176,7 @@ Some general tips:
 
     <!-- Step 4 -->
     <section id="step4">
-      <h2>Step 4</h2>
+      <h2><b>Step 4</b></h2>
       <p>Repeat steps 2 and 3 until you're left with just one emission channel to subtract. Increase its subtraction factors until you see signs of oversubtraction.
 More often than not you'll need to tweak the subtraction factors you chose previously for other emission bands, especially when you're subtracting more than one from a single color channel.
 </p>
@@ -212,7 +212,7 @@ More often than not you'll need to tweak the subtraction factors you chose previ
 
     <!-- Example Usage -->
     <section id="example">
-      <h2>Example Usage</h2>
+      <h2><b>Example Usage</b></h2>
       <p>Generally, emissionless processing is most useful when there is bright emission mixed with broadband components like dust or reflection nebulae. Take the Flaming Star Nebula for example - there's a bright reflection nebula you could boost and a ton of dust hidden by the surrounding Ha you could reveal by separating the image components. Emissionless processing is less useful when the emission isn't very bright relative to the features you want to reveal, like pretty much every galaxy.
 There are a couple of ways to use emissionless images but the main three are:
 </p>
