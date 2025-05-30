@@ -19,7 +19,7 @@
     .carousel-container { max-width: 800px; margin: 1rem auto; }
     .carousel-inner { display: flex; justify-content: left; align-items: center; }
     .carousel-item { flex: 0 0 auto; transition: none; }
-    .carousel-item img { object-fit: contain; max-width: 600px; max-height: auto; display: block; margin: 0 auto; }
+    .carousel-item img { object-fit: contain; max-width: 600px; width: 100%; max-height: auto; display: block; margin: 0 auto; }
     .carousel-control-prev-icon, .carousel-control-next-icon {  background-color: rgba(0, 0, 0, 0.6); border-radius: 50%; background-size: 70% 70%; width: 3rem; height: 3rem; }
     pre { background: #1e1e1e; color: #c5c6c7; padding: 0.5rem; border-radius: 4px; overflow-x: auto; max-width: 800px; margin: 1rem auto; margin-left: 0; color: deeppink}
     code { background: #1e1e1e; padding: 0.2rem 0.4rem; border-radius: 3px;}
@@ -31,7 +31,12 @@
 <body>
   <nav class="navbar navbar-expand-lg">
     <div class="container-fluid justify-content-center">
-      <a class="navbar-brand text-light" href="#">Emissionless Guide</a>
+      <div class="navbar-brand text-light text-center">
+        <div style="font-size: 1.5rem;">Emissionless Guide</div>
+        <div style="font-size: 0.9rem; transform: translateX(-2px)">
+          by <a href="https://app.astrobin.com/u/_Krzy#gallery" target="_blank" class="text-light">Mikołaj Wadowski</a>
+        </div>
+      </div>
     </div>
   </nav>
   <main class="container my-5">
