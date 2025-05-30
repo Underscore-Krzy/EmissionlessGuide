@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Emissionless Guide</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Instant switch animation */
+    .carousel-item {
+      transition-duration: 0s !important;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Emissionless Guide</a>
+    </div>
+  </nav>
+  <main class="container my-5">
+    <section id="step1">
+      <h2>Step 1</h2>
+      <p>Remove the gradients from both your broadband and narrowband images. Though it's not strictly necessary, you can also color calibrate your broadband at this step. Keep the stars in for now, and don't perform any sharpening before subtracting the emissions to ensure accurate subtraction. Don't denoise your broadband and avoid denoising your narrowband if you can help it. Do not stretch the image yet - both continuum and emission subtraction need to be done on linear data.</p>
+      <div id="carouselDualband" class="carousel slide" data-bs-ride="false" data-bs-interval="false">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img src="assets/dualband - original.jpg" class="d-block w-100" alt="Original dualband">
+          </div>
+          <div class="carousel-item">
+            <img src="assets/dualband - oversubtracted.jpg" class="d-block w-100" alt="Oversubtracted dualband">
+          </div>
+          <div class="carousel-item">
+            <img src="assets/dualband - properly subtracted.jpg" class="d-block w-100" alt="Properly subtracted dualband">
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselDualband" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselDualband" data-bs-slide="next">
+          <span class="carousel-control-next-icon"></span>
+        </button>
+        <p class="mt-2"><small>Figure 1. Properly subtracted vs oversubtracted vs original OIII channel of the Pacman nebula with a dualband filter.</small></p>
+      </div>
+    </section>
+
+    <hr>
+
+    <section id="step2">
+      <h2>Step 2</h2>
+      <p>If possible, identify a feature that's visible exclusively (or primarily) in one of the emission bands you’ve captured, and that also shows up clearly in the broadband data. This will make the subsequent steps easier.</p>
+      <div id="carouselStructure" class="carousel slide" data-bs-ride="false" data-bs-interval="false">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img src="assets/Structure pick - Ha.jpg" class="d-block w-100" alt="Structure pick - Ha">
+          </div>
+          <div class="carousel-item">
+            <img src="assets/Structure pick - O III.jpg" class="d-block w-100" alt="Structure pick - OIII">
+          </div>
+          <div class="carousel-item">
+            <img src="assets/Structure pick - RGB.jpg" class="d-block w-100" alt="Structure pick - RGB">
+          </div>
+          <div class="carousel-item">
+            <img src="assets/Structure pick - Ha annotated.jpg" class="d-block w-100" alt="Structure pick - Ha annotated">
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselStructure" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselStructure" data-bs-slide="next">
+          <span class="carousel-control-next-icon"></span>
+        </button>
+        <p class="mt-2"><small>Figure 2. Example of how to choose the ideal reference structure.</small></p>
+      </div>
+    </section>
+
+    <hr>
+
+    <section id="step3">
+      <h2>Step 3</h2>
+      <p>Now comes the fun part. You need to increase the subtraction factors for the emission band you've chosen in step 2. The PixelMath used to make an emissionless image is the standard image subtraction, just with more images.</p>
+      <pre><code class="language-js">// R:
+$T - r_h * (Ha - med(Ha)) - r_o * (Oiii - med(Oiii)) - r_s * (Sii - med(Sii))
+
+// G:
+$T - g_h * (Ha - med(Ha)) - g_o * (Oiii - med(Oiii)) - g_s * (Sii - med(Sii))
+
+// B:
+$T - b_h * (Ha - med(Ha)) - b_o * (Oiii - med(Oiii)) - b_s * (Sii - med(Sii))
+
+// Symbols:
+r_h = 0.0,
+r_o = 0.0,
+r_s = 0.0,
+
+g_h = 0.0,
+g_o = 0.0,
+g_s = 0.0,
+
+b_h = 0.0,
+b_o = 0.0,
+b_s = 0.0
+</code></pre>
+      <p>Tweak the symbols for the selected band until the feature you identified in Step 2 disappears or there are signs of oversubtraction.</p>
+      <p>Some general tips:</p>
+      <ul>
+        <li>Sii - <code>R = 1.0, G = 0.0, B = 0.0</code></li>
+        <li>Ha - <code>R = 1.0, G = 0.2, B = 0.3</code></li>
+        <li>Oiii - <code>R = 0.0, G = 0.9, B = 1.0</code></li>
+      </ul>
+    </section>
+
+    <hr>
+
+    <section id="step4">
+      <h2>Step 4</h2>
+      <p>Repeat steps 2 and 3 until you're left with just one emission channel to subtract. Increase its subtraction factors until you see signs of oversubtraction. More often than not you'll need to tweak the subtraction factors you chose previously for other emission bands, especially when you're subtracting more than one from a single color channel.</p>
+      <div id="carouselEmissionSub" class="carousel slide" data-bs-ride="false" data-bs-interval="false">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img src="assets/emission subtraction - RGB.jpg" class="d-block w-100" alt="Emission subtraction RGB">
+          </div>
+          <div class="carousel-item">
+            <img src="assets/emission subtraction - Ha subtracted.jpg" class="d-block w-100" alt="Ha subtracted">
+          </div>
+          <div class="carousel-item">
+            <img src="assets/emission subtraction - Initial emissionless.jpg" class="d-block w-100" alt="Initial emissionless">
+          </div>
+          <div class="carousel-item">
+            <img src="assets/emission subtraction - Final tweaks.jpg" class="d-block w-100" alt="Final tweaks">
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselEmissionSub" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselEmissionSub" data-bs-slide="next">
+          <span class="carousel-control-next-icon"></span>
+        </button>
+        <p class="mt-2"><small>Figure 3. Stages of an example emission subtraction.</small></p>
+      </div>
+    </section>
+
+    <hr>
+
+    <section id="example">
+      <h2>Example Usage</h2>
+      <p>Generally, emissionless processing is most useful when there is bright emission mixed with broadband components like dust or reflection nebulae. Take the Flaming Star Nebula for example - there's a bright reflection nebula you could boost and a ton of dust hidden by the surrounding Ha you could reveal by separating the image components. Emissionless processing is less useful when the emission isn't very bright relative to the features you want to reveal, like pretty much every galaxy.</p>
+      <p>There are a couple of ways to use emissionless images but the main three are:</p>
+      <ol>
+        <li>A simple non-emission enhancement - stretch the emissionless image like usual, though you probably want to keep it on the darker, understretched side. Screen blend <code>~(~$T * ~emissionless)</code> it with your final image towards the end of your processing, similar to how you'd do narrowband addition.</li>
+        <li>A base for narrowband addition - instead of adding the narrowband to your broadband image you instead add it to the emissionless image. This allows for more precise control over each part of the image, especially when paired with HDR stretching of the narrowband channels. This way, you'll preserve the features that would be otherwise overshadowed by bright emission while also adding the faint narrowband features.</li>
+        <li>A better continuum reference - technically continuum subtraction should be done using emissionless images. While it might not be strictly necessary for Ha or Oiii continuum subtraction, Sii will very often get severely oversubtracted if you don't remove Ha emission from the red channel before CS.</li>
+      </ol>
+      <div id="carouselAddition" class="carousel slide" data-bs-ride="false" data-bs-interval="false">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img src="assets/addition - before.jpg" class="d-block w-100" alt="Addition before">
+          </div>
+          <div class="carousel-item">
+            <img src="assets/addition - after.jpg" class="d-block w-100" alt="Addition after">
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselAddition" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselAddition" data-bs-slide="next">
+          <span class="carousel-control-next-icon"></span>
+        </button>
+        <p class="mt-2"><small>Figure 4. Example of using the emissionless image to enhance the continuum structures.</small></p>
+      </div>
+
+      <div id="carouselBase" class="carousel slide my-4" data-bs-ride="false" data-bs-interval="false">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img src="assets/Emissionless as base - before.jpg" class="d-block w-100" alt="Emissionless base before">
+          </div>
+          <div class="carousel-item">
+            <img src="assets/Emissionless as base - after.jpg" class="d-block w-100" alt="Emissionless base after">
+          </div>
+        </nivative rs="carousel-inner">
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselBase" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselBase" data-bs-slide="next">
+          <span class="carousel-control-next-icon"></span>
+        </button>
+        <p class="mt-2"><small>Figure 5. Example of using the emissionless image as a base for narrowband addition.</small></p>
+      </div>
+    </section>
+  </main>
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
